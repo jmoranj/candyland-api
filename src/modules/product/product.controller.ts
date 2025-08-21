@@ -1,7 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
-import { ProductsService } from './product.service';
-import { CreateProductDto, productCreateSchema } from './product.schema';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ZodValidationPipe } from '../../pipes/ZodValidator.pipe';
+import { CreateProductDto, productCreateSchema, productUpdateSchema, UpdateProductDto } from './product.schema';
+import { ProductsService } from './product.service';
 
 @Controller('products')
 export class ProductsController {
@@ -15,27 +15,23 @@ export class ProductsController {
     return this.productsService.create(createBody);
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.productsService.findAll();
-  // }
+  @Get()
+  findAll() {
+    return this.productsService.findAll();
+  }
 
-  // @Get(':id')
-  // @UsePipes(new ZodValidationPipe(productParamsSchema))
-  // findOne(@Param('id') params: { id: string }) {
-  //   return this.productsService.findOne(params.id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: string ) {
+    return this.productsService.findByID(id);
+  }
 
-  // @Put(':id')
-  // @UsePipes(new ZodValidationPipe(productParamsSchema))
-  // @UsePipes(new ZodValidationPipe(productUpdateSchema))
-  // update(@Param('id') params: { id: string }, @Body() body: any) {
-  //   return this.productsService.update(params.id, body);
-  // }
+  @Put(':id')
+  update(@Param('id') id: string , @Body(new ZodValidationPipe(productUpdateSchema)) body: UpdateProductDto) {
+    return this.productsService.update(id, body);
+  }
 
-  // @Delete(':id')
-  // @UsePipes(new ZodValidationPipe(productParamsSchema))
-  // remove(@Param('id') params: { id: string }) {
-  //   return this.productsService.remove(params.id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string ) {
+    return this.productsService.remove(id);
+  }
 }
