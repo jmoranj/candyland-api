@@ -15,3 +15,21 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Product {
+id String @id @default(cuid())
+name String
+description String @db.VarChar(500)
+price String
+category String
+imageUrl String
+status Boolean @default(true)
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+}
+
+// model Product {
+//   id    String @id @default(cuid())
+//   name  String
+//   email String
+// }
