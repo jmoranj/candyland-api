@@ -31,7 +31,7 @@ createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
 
 // relação com Order
-  orders  Order[]  @relation("OrderProducts")
+  orderItems  OrderProduct[] // relação com a tabela pivot
 }
 // --------------------------------------------
 
@@ -43,15 +43,26 @@ enum Status {
 }
 
 model Order {
-  id        Int        @id @default(autoincrement())
-  name      String
-  phone     String
-  scheduled DateTime
-  status    Status     @default(PENDING)
-  orderedAt DateTime   @default(now())
+  id          String         @id @default(cuid())
+  name        String
+  phone       String
+  scheduled   DateTime
+  status      Status         @default(PENDING)
+  orderedAt   DateTime       @default(now())
 
-  // relação com Product
-  products  Product[]  @relation("OrderProducts")
+  orderItems  OrderProduct[] // relação com a tabela pivot
 }
+
 // --------------------------------------------
+
+
+model OrderProduct {
+  id         Int      @id @default(autoincrement())
+  orderId    String
+  productId  String
+  quantity   Int
+
+  order      Order    @relation(fields: [orderId], references: [id])
+  product    Product  @relation(fields: [productId], references: [id])
+}
 

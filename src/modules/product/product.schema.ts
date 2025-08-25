@@ -11,9 +11,5 @@ export const productCreateSchema = z.object({
 
 export const productUpdateSchema = productCreateSchema.partial();
 
-export const productParamsSchema = z.object({
-  id: z.string().cuid(),
-});
-
 export type CreateProductDto = z.infer<typeof productCreateSchema>;
 export type UpdateProductDto = z.infer<typeof productUpdateSchema>;
