@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User Table
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -15,7 +16,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+// --------------------------------------------
 
+// Product Table
 model Product {
 id String @id @default(cuid())
 name String
@@ -26,10 +29,29 @@ imageUrl String
 status Boolean @default(true)
 createdAt DateTime @default(now())
 updatedAt DateTime @updatedAt
+
+// relação com Order
+  orders  Order[]  @relation("OrderProducts")
+}
+// --------------------------------------------
+
+// Product Order Table
+enum Status {
+  PENDING
+  CONFIRMED
+  FINISHED
 }
 
-// model Product {
-//   id    String @id @default(cuid())
-//   name  String
-//   email String
-// }
+model Order {
+  id        Int        @id @default(autoincrement())
+  name      String
+  phone     String
+  scheduled DateTime
+  status    Status     @default(PENDING)
+  orderedAt DateTime   @default(now())
+
+  // relação com Product
+  products  Product[]  @relation("OrderProducts")
+}
+// --------------------------------------------
+
