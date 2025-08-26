@@ -30,7 +30,3 @@ Desenvolvido em **NestJS**, ele fornece a camada de serviços e gerenciamento de
 - **Prisma ORM** – Acesso e modelagem do banco de dados.
 - **MySQL** – Banco de dados relacional.
 - **JWT** – Autenticação baseada em tokens.
-
----
-
-## 📂 Estrutura do Projeto
