@@ -49,6 +49,7 @@ model Order {
   scheduled   DateTime
   status      Status         @default(PENDING)
   orderedAt   DateTime       @default(now())
+  orderPrice  String
 
   orderItems  OrderProduct[] // relação com a tabela pivot
 }
@@ -61,6 +62,8 @@ model OrderProduct {
   orderId    String
   productId  String
   quantity   Int
+  unitPrice  String
+  productTotalPrice String
 
   order      Order    @relation(fields: [orderId], references: [id])
   product    Product  @relation(fields: [productId], references: [id])
