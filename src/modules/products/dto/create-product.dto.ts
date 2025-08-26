@@ -1,4 +1,5 @@
-import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import Decimal from 'decimal.js';
 
 export class CreateProductDto {
   @IsString()
@@ -9,18 +10,18 @@ export class CreateProductDto {
   @IsNotEmpty()
   description: string;
 
-  @IsString()
   @IsNotEmpty()
-  price: string;
+  price: Decimal;
 
   @IsString()
   @IsNotEmpty()
   category: string;
 
   @IsString()
-  @IsNotEmpty()
-  imageUrl: string;
+  @IsOptional()
+  imageUrl?: string;
 
   @IsBoolean()
-  status: boolean = true;
+  @IsOptional()
+  status?: boolean;
 }

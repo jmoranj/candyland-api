@@ -23,7 +23,7 @@ model Product {
 id String @id @default(cuid())
 name String
 description String @db.VarChar(500)
-price String
+price Decimal @db.Decimal(19, 4)
 category String
 imageUrl String
 status Boolean @default(true)
@@ -49,7 +49,7 @@ model Order {
   scheduled   DateTime
   status      Status         @default(PENDING)
   orderedAt   DateTime       @default(now())
-  orderPrice  String
+  orderPrice  Decimal @db.Decimal(19, 4)
 
   orderItems  OrderProduct[] // relação com a tabela pivot
 }
@@ -62,8 +62,8 @@ model OrderProduct {
   orderId    String
   productId  String
   quantity   Int
-  unitPrice  String
-  productTotalPrice String
+  unitPrice  Decimal @db.Decimal(19, 4)
+  productTotalPrice Decimal @db.Decimal(19, 4)
 
   order      Order    @relation(fields: [orderId], references: [id])
   product    Product  @relation(fields: [productId], references: [id])

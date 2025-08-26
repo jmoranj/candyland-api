@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { format } from '../../utils/money';
 import { PrismaService } from '../database/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 @Injectable()
@@ -10,7 +11,7 @@ export class ProductsService {
       data: {
         name: data.name,
         description: data.description,
-        price: data.price,
+        price: format(data.price),
         category: data.category,
         imageUrl: data.imageUrl ?? '',
         status: data.status ?? true,
@@ -35,7 +36,7 @@ export class ProductsService {
       data: {
         name: data.name,
         description: data.description,
-        price: data.price,
+        price: data.price ? format(data.price) : undefined,
         category: data.category,
         imageUrl: data.imageUrl ?? '',
         status: data.status ?? true,

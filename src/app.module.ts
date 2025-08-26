@@ -5,7 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
 import { PrismaModule } from './modules/database/prisma.module';
 import { OrdersModule } from './modules/orders/order.module';
-import { ProductsModule } from './modules/product/product.module';
+import { ProductsModule } from './modules/products/product.module';
 
 @Module({
   imports: [PrismaModule, AuthModule, ProductsModule, OrdersModule],

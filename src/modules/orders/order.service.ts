@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Product } from '@prisma/client';
-import Decimal from 'decimal.js';
+import { format, sum, toDecimal } from '../../utils/money';
 import { PrismaService } from '../database/prisma.service';
 import { CreateOrderDto, CreateOrderProductDto } from './dto/create-order.dto';
 
@@ -47,17 +47,17 @@ export class OrderService {
     orderItems: CreateOrderProductDto[],
     products: Product[],
   ) {
-    return orderItems
-      .reduce((acc, item) => {
-        const product = products.find((p) => p.id === item.productId);
-
-        if (!product) {
-          throw new BadRequestException();
-        }
-
-        return acc.plus(new Decimal(product.price).times(item.quantity));
-      }, new Decimal(0))
-      .toString();
+    const values = orderItems.map(item => {
+      const product = products.find(p => p.id === item.productId);
+      
+      if (!product) {
+        throw new BadRequestException();
+      }
+      
+      return toDecimal(product.price).times(item.quantity);
+    });
+    
+    return format(sum(values));
   }
 
   private getUnitPrice(productId: string, products: Product[]) {
@@ -67,7 +67,7 @@ export class OrderService {
       throw new BadRequestException();
     }
 
-    return product.price;
+    return format(product.price);
   }
 
   private getProductTotalPrice(
@@ -81,6 +81,6 @@ export class OrderService {
       throw new BadRequestException();
     }
 
-    return new Decimal(product.price).times(quantity).toString();
+    return format(toDecimal(product.price).times(quantity));
   }
 }

@@ -1,4 +1,5 @@
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import Decimal from 'decimal.js';
 
 export class UpdateProductDto {
   @IsString()
@@ -11,7 +12,7 @@ export class UpdateProductDto {
 
   @IsString()
   @IsOptional()
-  price?: string;
+  price?: Decimal;
 
   @IsString()
   @IsOptional()
