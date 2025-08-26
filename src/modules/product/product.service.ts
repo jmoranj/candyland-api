@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
-import { CreateProductDto } from './product.schema';
+import { CreateProductDto } from './dto/create-product.dto';
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) {}
@@ -42,7 +42,7 @@ export class ProductsService {
       },
     });
   }
-  
+
   async remove(id: string) {
     return this.prisma.product.delete({
       where: { id },
