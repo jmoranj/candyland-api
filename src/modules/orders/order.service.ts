@@ -38,6 +38,13 @@ export class OrderService {
           })),
         },
       },
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+      },
     });
 
     return order;
@@ -47,16 +54,16 @@ export class OrderService {
     orderItems: CreateOrderProductDto[],
     products: Product[],
   ) {
-    const values = orderItems.map(item => {
-      const product = products.find(p => p.id === item.productId);
-      
+    const values = orderItems.map((item) => {
+      const product = products.find((p) => p.id === item.productId);
+
       if (!product) {
         throw new BadRequestException();
       }
-      
+
       return toDecimal(product.price).times(item.quantity);
     });
-    
+
     return format(sum(values));
   }
 
@@ -82,5 +89,18 @@ export class OrderService {
     }
 
     return format(toDecimal(product.price).times(quantity));
+  }
+
+  async getAll() {
+    const orders = await this.prisma.order.findMany({
+    include: {
+      orderItems: {
+        include: {
+          product: true,
+          },
+        },
+      },
+    });
+    return orders;
   }
 }
