@@ -103,4 +103,10 @@ export class OrderService {
     });
     return orders;
   }
+
+  async getByID(id: string) {
+    return this.prisma.order.findUnique({
+      where: { id },
+    });
+  }
 }
