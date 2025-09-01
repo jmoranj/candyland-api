@@ -1,9 +1,12 @@
+import { PartialType } from '@nestjs/mapped-types';
+import { Status } from '@prisma/client';
 import {
   IsArray,
   IsDate,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
-  IsString,
+  IsString
 } from 'class-validator';
 
 export class CreateOrderProductDto {
@@ -32,4 +35,14 @@ export class CreateOrderDto {
   @IsArray()
   @IsNotEmpty()
   orderItems: CreateOrderProductDto[];
+}
+
+export class PagingDto{
+  page: number;
+  limit: number;
+}
+
+export class UpdateOrderDto extends PartialType(CreateOrderDto) {
+  @IsEnum(Status)
+  status: Status;
 }

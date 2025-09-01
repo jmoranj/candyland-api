@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Product } from '@prisma/client';
 import Decimal from 'decimal.js';
 import { PrismaService } from '../database/prisma.service';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto } from './dto/order.dto';
 import { OrderService } from './order.service';
 
 // Strict types for inspecting Prisma order.create call args in tests

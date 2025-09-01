@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import Decimal from 'decimal.js';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto } from './dto/order.dto';
 import { OrdersController } from './order.controller';
 import { OrderService } from './order.service';
 

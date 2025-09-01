@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { format, sum, toDecimal } from '../../utils/money';
 import { PrismaService } from '../database/prisma.service';
-import { CreateOrderDto, CreateOrderProductDto } from './dto/create-order.dto';
+import { CreateOrderDto, CreateOrderProductDto, UpdateOrderDto } from './dto/order.dto';
 
 @Injectable()
 export class OrderService {
@@ -91,22 +91,91 @@ export class OrderService {
     return format(toDecimal(product.price).times(quantity));
   }
 
-  async getAll() {
-    const orders = await this.prisma.order.findMany({
-    include: {
-      orderItems: {
-        include: {
-          product: true,
-          },
+  async getAll(page: number, limit: number, filters?: {
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  productId?: string;
+  }) {
+    // validação para numeros negativos
+    if (page < 1) page = 1;
+    if (limit < 1) limit = 10;
+
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    // filtro por status
+    if (filters?.status) {
+      where.status = filters.status.toUpperCase();
+    }
+
+    // filtro por intervalo de datas
+    if (filters?.startDate && filters?.endDate) {
+      where.orderedAt = {
+        gte: new Date(filters.startDate),
+        lte: new Date(filters.endDate),
+      };
+    }
+
+    // filtro por produto
+    if (filters?.productId) {
+      where.orderItems = {
+        some: {
+          productId: filters.productId,
         },
+      };
+    }
+
+    const orders = await this.prisma.order.findMany({
+      skip,
+      take: limit,
+      where,
+      include: {
+        orderItems: { include: { product: true } },
       },
+      orderBy: { orderedAt: 'desc' },
     });
-    return orders;
+
+    const total = await this.prisma.order.count({ where });
+
+    return {
+      data: orders,
+      pagination: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
   }
 
   async getByID(id: string) {
-    return this.prisma.order.findUnique({
+    const order = this.prisma.order.findUnique({
       where: { id },
-    });
+    })
+    return order;
   }
+
+  async update(id: string, data: UpdateOrderDto) {
+
+  //Verifica se o pedido existe
+  const existingOrder = await this.prisma.order.findUnique({
+    where: { id },
+    include: { orderItems: true },
+  });
+  if (!existingOrder) {
+    throw new NotFoundException('Order not found');
+  }
+
+  //Atualiza o status do pedido
+  const updatedOrder = await this.prisma.order.update({
+    where: { id },
+    data: {
+      status: data.status ?? existingOrder.status,
+    }
+  });
+
+  return updatedOrder;
+}
 }
