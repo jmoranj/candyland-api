@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 async function main() {
   // Criar usuário admin
   const email = 'admin@gmail.com';
-  const password = generateRandomPassword();
+  const password = process.env.ADMIN_PASSWORD || generateRandomPassword();
   const name = 'Administrador';
 
   const hashedPassword = await bcrypt.hash(password, 10);
