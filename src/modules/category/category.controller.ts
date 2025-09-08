@@ -5,9 +5,7 @@ import { CategoriesDto } from './dto/category.dto';
 
 @Controller('category')
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {
-    console.log('CategoryModule instantiated');
-  }
+  constructor(private readonly categoryService: CategoryService) {}
 
   @UseGuards(AuthGuard)
   @Post()

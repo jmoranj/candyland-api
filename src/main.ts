@@ -1,21 +1,27 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { PrismaService } from './modules/database/prisma.service';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  
+
   // Enable validation using class-validator
   app.useGlobalPipes(new ValidationPipe({
-    whitelist: true, // Strip properties that don't have decorators
-    forbidNonWhitelisted: true, // Throw error if non-whitelisted properties are present
-    transform: true, // Transform payloads to be objects typed according to their DTO classes
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
     transformOptions: {
-      enableImplicitConversion: true, // Enable implicit conversion of primitive types
+      enableImplicitConversion: true,
     },
   }));
-  
+
+  // Aqui: pega o PrismaService e ativa os hooks para shutdown
+  const prismaService = app.get(PrismaService);
+  await prismaService.enableShutdownHooks();
+
   const port = process.env.PORT ?? 10000;
   await app.listen(port);
 
