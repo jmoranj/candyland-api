@@ -3,10 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
+// --------------------------------------------
 // User Table
 model User {
   id        Int      @id @default(autoincrement())
@@ -20,22 +21,31 @@ model User {
 
 // Product Table
 model Product {
-id String @id @default(cuid())
-name String
-description String @db.VarChar(500)
-price Decimal @db.Decimal(19, 4)
-category String
-imageUrl String
-status Boolean @default(true)
-createdAt DateTime @default(now())
-updatedAt DateTime @updatedAt
+  id          String         @id @default(cuid())
+  name        String
+  description String         @db.VarChar(500) // PostgreSQL aceita @db.VarChar
+  price       Decimal        @db.Decimal(19, 4)
+  category    String
+  imageUrl    String
+  status      Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
 
-// relação com Order
-  orderItems  OrderProduct[] // relação com a tabela pivot
+  // relação com Order
+  orderItems  OrderProduct[]
 }
 // --------------------------------------------
 
-// Product Order Table
+// Categories Table
+model Category {
+  id        Int      @id @default(autoincrement())
+  categoryName      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+// --------------------------------------------
+
+// Order Table
 enum Status {
   PENDING
   CONFIRMED
@@ -49,23 +59,21 @@ model Order {
   scheduled   DateTime
   status      Status         @default(PENDING)
   orderedAt   DateTime       @default(now())
-  orderPrice  Decimal @db.Decimal(19, 4)
+  orderPrice  Decimal        @db.Decimal(19, 4)
 
-  orderItems  OrderProduct[] // relação com a tabela pivot
+  orderItems  OrderProduct[]
 }
 
 // --------------------------------------------
-
-
+// Pivot Table
 model OrderProduct {
-  id         Int      @id @default(autoincrement())
-  orderId    String
-  productId  String
-  quantity   Int
-  unitPrice  Decimal @db.Decimal(19, 4)
-  productTotalPrice Decimal @db.Decimal(19, 4)
+  id                Int      @id @default(autoincrement())
+  orderId           String
+  productId         String
+  quantity          Int
+  unitPrice         Decimal  @db.Decimal(19, 4)
+  productTotalPrice Decimal  @db.Decimal(19, 4)
 
-  order      Order    @relation(fields: [orderId], references: [id])
-  product    Product  @relation(fields: [productId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
-
