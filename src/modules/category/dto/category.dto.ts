@@ -4,4 +4,8 @@ export class CategoriesDto {
   @IsString()
   @IsNotEmpty()
   categoryName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  categoryIcon: string;
 }
