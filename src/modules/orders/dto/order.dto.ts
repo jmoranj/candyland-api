@@ -6,7 +6,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
-  IsString
+  IsString,
 } from 'class-validator';
 
 export class CreateOrderProductDto {
@@ -37,7 +37,7 @@ export class CreateOrderDto {
   orderItems: CreateOrderProductDto[];
 }
 
-export class PagingDto{
+export class PagingDto {
   page: number;
   limit: number;
 }

@@ -1,8 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Product } from '@prisma/client';
 import { format, sum, toDecimal } from '../../utils/money';
 import { PrismaService } from '../database/prisma.service';
-import { CreateOrderDto, CreateOrderProductDto, UpdateOrderDto } from './dto/order.dto';
+import {
+  CreateOrderDto,
+  CreateOrderProductDto,
+  UpdateOrderDto,
+} from './dto/order.dto';
 
 @Injectable()
 export class OrderService {
@@ -91,28 +99,32 @@ export class OrderService {
     return format(toDecimal(product.price).times(quantity));
   }
 
-  async getAll(page: number, limit: number, filters?: {
-  status?: string;
-  startDate?: string;
-  endDate?: string;
-  productId?: string;
-  }) {
+  async getAll(
+    page: number,
+    limit: number,
+    filters?: {
+      status?: string;
+      startDate?: string;
+      endDate?: string;
+      productId?: string;
+    },
+  ) {
     // validação para numeros negativos
     if (page < 1) page = 1;
     if (limit < 1) limit = 10;
 
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    const finalOrder: Record<string, any> = {};
 
     // filtro por status
     if (filters?.status) {
-      where.status = filters.status.toUpperCase();
+      finalOrder.status = filters.status.toUpperCase();
     }
 
     // filtro por intervalo de datas
     if (filters?.startDate && filters?.endDate) {
-      where.orderedAt = {
+      finalOrder.orderedAt = {
         gte: new Date(filters.startDate),
         lte: new Date(filters.endDate),
       };
@@ -120,7 +132,7 @@ export class OrderService {
 
     // filtro por produto
     if (filters?.productId) {
-      where.orderItems = {
+      finalOrder.orderItems = {
         some: {
           productId: filters.productId,
         },
@@ -130,14 +142,14 @@ export class OrderService {
     const orders = await this.prisma.order.findMany({
       skip,
       take: limit,
-      where,
+      where: finalOrder,
       include: {
         orderItems: { include: { product: true } },
       },
       orderBy: { orderedAt: 'desc' },
     });
 
-    const total = await this.prisma.order.count({ where });
+    const total = await this.prisma.order.count({ where: finalOrder });
 
     return {
       data: orders,
@@ -153,29 +165,28 @@ export class OrderService {
   async getByID(id: string) {
     const order = this.prisma.order.findUnique({
       where: { id },
-    })
+    });
     return order;
   }
 
   async update(id: string, data: UpdateOrderDto) {
-
-  //Verifica se o pedido existe
-  const existingOrder = await this.prisma.order.findUnique({
-    where: { id },
-    include: { orderItems: true },
-  });
-  if (!existingOrder) {
-    throw new NotFoundException('Order not found');
-  }
-
-  //Atualiza o status do pedido
-  const updatedOrder = await this.prisma.order.update({
-    where: { id },
-    data: {
-      status: data.status ?? existingOrder.status,
+    //Verifica se o pedido existe
+    const existingOrder = await this.prisma.order.findUnique({
+      where: { id },
+      include: { orderItems: true },
+    });
+    if (!existingOrder) {
+      throw new NotFoundException('Order not found');
     }
-  });
 
-  return updatedOrder;
-}
+    //Atualiza o status do pedido
+    const updatedOrder = await this.prisma.order.update({
+      where: { id },
+      data: {
+        status: data.status ?? existingOrder.status,
+      },
+    });
+
+    return updatedOrder;
+  }
 }

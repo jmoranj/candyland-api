@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateOrderDto, UpdateOrderDto } from './dto/order.dto';
 import { OrderService } from './order.service';
@@ -28,7 +37,6 @@ export class OrdersController {
     );
   }
 
-
   @UseGuards(AuthGuard)
   @Get(':id')
   getById(@Param('id') id: string) {
@@ -37,10 +45,7 @@ export class OrdersController {
 
   @UseGuards(AuthGuard)
   @Patch(':id')
-  update(
-    @Param('id') id: string, 
-    @Body() data: UpdateOrderDto
-  ) {
+  update(@Param('id') id: string, @Body() data: UpdateOrderDto) {
     return this.ordersService.update(id, data);
   }
 }
