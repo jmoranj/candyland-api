@@ -1,6 +1,6 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
-export class CategoriesDto {
+export class CreateCategoriesDto {
   @IsString()
   @IsNotEmpty()
   categoryName: string;
@@ -8,4 +8,16 @@ export class CategoriesDto {
   @IsString()
   @IsNotEmpty()
   categoryIcon: string;
+}
+
+export class UpdateCategoriesDto {
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  categoryIcon?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  categoryName?: string;
 }
