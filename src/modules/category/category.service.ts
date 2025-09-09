@@ -26,4 +26,8 @@ export class CategoryService {
     console.log('Category created:', category);
     return category;
   }
+
+  async findAll() {
+    return this.prisma.category.findMany();
+  }
 }
