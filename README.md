@@ -1,5 +1,11 @@
-# 🍬 Candyland API - Backend
+<h1 align="center">🍬 Candyland API</h1>
 
+<p align="center">
+    <img src="https://skillicons.dev/icons?i=nodejs,typescript,nest,postgresql,prisma" />
+</p>
+<div>
+<h1 align="center"></h1>
+</div>
 O **Candyland API** é o backend do sistema **Candyland**, uma vitrine online para doceria.  
 Desenvolvido em **NestJS**, ele fornece a camada de serviços e gerenciamento de dados, garantindo que a vitrine e o dashboard admin funcionem corretamente.
 
