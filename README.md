@@ -6,9 +6,9 @@
 <div>
 <h1 align="center"></h1>
 </div>
-O **Candyland API** é o backend do sistema **Candyland**, uma vitrine online para doceria.  
-Desenvolvido em **NestJS**, ele fornece a camada de serviços e gerenciamento de dados, garantindo que a vitrine e o dashboard admin funcionem corretamente.
 
+O **Candyland API** é o backend do sistema **Candyland**, uma vitrine online para doceria.  
+Desenvolvido em **NestJS**, ele fornece a camada de serviços e gerenciamento de dados, garantindo que a vitrine e o dashboard admin funcionem corretamente.    
 ---
 
 ## ✨ Funcionalidades
