@@ -14,12 +14,18 @@ export class AuthController {
     res.cookie('access_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 1000 * 60 * 60 * 24, // 1 dia
       path: '/',
     });
 
     console.log('Login data:', data);
     return res.send({ message: 'Login bem-sucedido' });
+  }
+
+  @Post('logout')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('access_token', { path: '/' });
+    return { message: 'Logout realizado com sucesso!' };
   }
 }
