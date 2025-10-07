@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../database/prisma.service';
@@ -8,18 +12,18 @@ import { AuthDto } from './dto/auth.dto';
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private  readonly jwtService: JwtService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  private async findByEmail(data: AuthDto){
-      return this.prisma.user.findUnique({
-        where: { email: data.email }
-      })
-    }
+  private async findByEmail(data: AuthDto) {
+    return this.prisma.user.findUnique({
+      where: { email: data.email },
+    });
+  }
 
-  async signIn(data: AuthDto) {
+  async login(data: AuthDto): Promise<string> {
     const user = await this.findByEmail(data);
-    
+
     if (!user) {
       throw new NotFoundException('User not found');
     }
@@ -34,11 +38,9 @@ export class AuthService {
     }
 
     const payload = { sub: user.id, email: user.email };
-    const accessToken = await this.jwtService.signAsync(payload)
-    console.log('Login bem-sucedido:', user , "\n",{Token: accessToken})
+    const accessToken = await this.jwtService.signAsync(payload);
+    console.log('Login bem-sucedido:', user, '\n', { Token: accessToken });
 
-    return {
-      accessToken
-    };
+    return accessToken;
   }
 }

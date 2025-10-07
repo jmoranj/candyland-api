@@ -1,19 +1,25 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { AuthDto } from './dto/auth.dto';
 
-interface LoginDto {
-  email: string;
-  password: string;
-} 
-
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
- 
+  constructor(private readonly authService: AuthService) {}
+
   @Post('login')
-  async login(@Body() data: AuthDto) {
-    console.log('Login body:', data);
-    return this.authService.signIn(data);
+  async login(@Body() data: AuthDto, @Res() res: Response) {
+    const token: string = await this.authService.login(data);
+
+    res.cookie('access_token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24, // 1 dia
+      path: '/',
+    });
+
+    console.log('Login data:', data);
+    return res.send({ message: 'Login bem-sucedido' });
   }
 }

@@ -7,6 +7,6 @@ import { SharedJwtModule } from '../shared/jwt.module';
 @Module({
   imports: [PrismaModule, SharedJwtModule],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
 })
 export class AuthModule {}
